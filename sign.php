@@ -20,6 +20,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         }
         if($pass != $conf_password){
             echo 'Mots de passe différents';
+            return;
         }
 
         $check_user = $bdd->prepare("SELECT `name`, `email` FROM `user` WHERE `name` = :pseudo OR `email` = :mail");

@@ -1,6 +1,37 @@
 <?php
-
+session_start();
 include_once('connexion.php');
+
+if($_SERVER['REQUEST_METHOD'] === "POST"){
+
+    $pseudo = isset($_POST['pseudo']) ? trim($_POST['pseudo']) : '';
+    $pass = isset($_POST['password']) ? trim($_POST['password']) : '';
+
+    if(!empty($pseudo && !empty($pass))){
+
+        $req = $bdd->prepare("SELECT `id_user`, `name`, `email`, `password` FROM `user` WHERE `name` = :pseudo OR `email` = :pseudo");
+        $req->bindParam('pseudo', $pseudo, PDO::PARAM_STR);
+        $req->execute();
+
+        $user = $req->fetch(PDO::FETCH_ASSOC);
+
+        if($user){
+            if(password_verify($pass, $user['password'])){
+                $_SESSION['id_user'] = $user['id_user'];
+                $_SESSION['username'] = $user['name'];
+
+                header('Location: profil.php');
+                exit();
+            } else {
+                echo 'Mot de passe incorrect ';
+            }
+        } else {
+            echo 'Utilisateur inconnu';
+        }
+    } else {
+        echo 'Tous les champs doivent être remplis';
+    }
+}
 
 
 ?>
