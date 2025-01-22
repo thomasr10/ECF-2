@@ -31,6 +31,16 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addTask'])){
     }
 }
 
+// Récupérer le nom de la liste
+
+$reqListName = $bdd->prepare("SELECT `name` FROM `list` WHERE `id_list` = :id_list");
+$reqListName->bindParam('id_list', $idList, PDO::PARAM_INT);
+$reqListName->execute();
+$listName = $reqListName->fetch(PDO::FETCH_ASSOC);
+
+
+
+
 //afficher les requêtes
 
 $reqTask = $bdd->prepare("SELECT DISTINCT `task`.`id_task`, `task`.`name`, `task`.`description` AS 'desc', `task`.`creation_date` AS 'crea_date', `task`.`limit_date` AS 'lim_date', `task`.`statut` AS 'statut', `task`.`id_list`  FROM `task` WHERE `id_list` = :id_list");
@@ -38,19 +48,33 @@ $reqTask->bindParam('id_list', $idList, PDO::PARAM_INT);
 $reqTask->execute();
 $task = $reqTask->fetchAll(PDO::FETCH_ASSOC);
 
+
+
 // ajouter un utilisateur
 
-// if($_SERVER['REQUEST_METHOD'] && isset($_POST['addUser'])){
-//     $newPseudo = isset($_POST['addPseudo']) ? trim($_POST['addPseudo']) : '';
+if($_SERVER['REQUEST_METHOD'] && isset($_POST['addUser'])){
+    $newPseudo = isset($_POST['addPseudo']) ? trim($_POST['addPseudo']) : '';
 
-//     $searchUser = $bdd->prepare("SELECT `id_user` AS 'new_id', `name`, `email` FROM `user` WHERE `name` = :addPseudo OR `email` = :addPseudo");
-//     $searchUser->bindParam(':addPseudo', $newPseudo, PDO::PARAM_STR);
-//     $searchUser->execute();
+    $reqSearchUser = $bdd->prepare("SELECT `id_user`, `name`, `email` FROM `user` WHERE `name` = :addPseudo OR `email` = :addPseudo");
+    $reqSearchUser->bindParam('addPseudo', $newPseudo, PDO::PARAM_STR);
+    $reqSearchUser->execute();
 
-//     if($searchUser->rowCount() > 0){
+    if($reqSearchUser->rowCount() > 0){
+        $searchUser = $reqSearchUser->fetch(PDO::FETCH_ASSOC);
+        $addId = $searchUser['id_user'];
 
-//     }
-// } 
+        $addUser = $bdd->prepare("INSERT INTO `user_list`(`id_user`, `id_list`) VALUES (:new_id, :id_list)");
+        $addUser->bindParam('new_id', $addId, PDO::PARAM_STR);
+        $addUser->bindParam('id_list', $idList, PDO::PARAM_STR);
+        $addUser->execute();
+
+        header('Location: task.php?id_list=' . $idList);
+        exit();
+
+    } else {
+        echo 'Nom d\'utilisateur inconnu';
+    }
+} 
 
 
 ?>
@@ -81,7 +105,10 @@ $task = $reqTask->fetchAll(PDO::FETCH_ASSOC);
                 <button>Ajouter une abeille</button>
             </div>
         </div>
-        <div id="add-task" >
+        <div>
+            <h2><?= $listName['name'] ?></h2>
+        </div>
+        <div id="add-task" style="display: none">
             <span>Nouvelle tâche</span>
             <div>
                 <form action="task.php?id_list=<?= $idList ?>" method="POST">
@@ -93,11 +120,11 @@ $task = $reqTask->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
         <div>
-            <div>
+            <div id="addBee">
                 <span>Ajouter une abeille à la ruche</span>
-                <form action="profil.php" method="POST" name="addUser">
+                <form action="task.php?id_list=<?= $idList ?>" method="POST" name="addUser">
                     <input type="text" name="addPseudo" required>
-                    <input type="submit" name="submit">
+                    <input type="submit" name="addUser">
                 </form>
             </div>
         </div>
@@ -107,7 +134,7 @@ $task = $reqTask->fetchAll(PDO::FETCH_ASSOC);
                 foreach($task as $tasks){
             ?>
             <div>
-                <h2><?= $tasks['name'] ?></h2>
+                <h3><?= $tasks['name'] ?></h3>
                 <p><?= $tasks['desc'] ?></p>
                 <p><?= $tasks['statut'] ?></p>
                 <div><?= $tasks['crea_date'] ?></div>

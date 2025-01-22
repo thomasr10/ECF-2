@@ -2,8 +2,7 @@
 session_start();
 include_once('connexion.php');
 
-
-//Créer une liste
+//Créer une liste        
 
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addList'])){
 
@@ -18,15 +17,16 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addList'])){
         $addList->bindParam('listDesc', $listDesc, PDO::PARAM_STR);
         $addList->bindParam('limDate', $limDate, PDO::PARAM_STR);
         $addList->execute();
-        
+
         if($addList->rowCount() > 0){
         
             $listId = $bdd->lastInsertID();
 
             $userList = $bdd->prepare("INSERT INTO `user_list`(`id_user`, `id_list`) VALUES (:id_user, :id_list)");
-            $userList->bindParam('id_user', $_SESSION['user_id'], PDO::PARAM_INT);
+            $userList->bindParam('id_user', $_SESSION['id_user'], PDO::PARAM_INT);
             $userList->bindParam('id_list', $listId, PDO::PARAM_INT);
             $userList->execute();
+
 
             header('Location: profil.php');
             exit();
@@ -39,11 +39,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addList'])){
 
 //afficher les listes
 
-$reqList = $bdd->prepare("SELECT DISTINCT `list`.`id_list` AS `id_list`, `list`.`name` AS 'name', `description` AS 'desc', `list`.`creation_date` AS 'crea_date', `list`.`limit_date` AS 'lim_date' FROM `list` INNER JOIN `user_list` ON `list`.`id_list` = `user_list`.`id_list` WHERE `user_list`.`id_user` = :id_user");
-$reqList->bindParam('id_user', $_SESSION['user_id'], PDO::PARAM_STR);
+$reqList = $bdd->prepare("SELECT `list`.`id_list` AS `id_list`, `list`.`name` AS 'name', `description` AS 'desc', `list`.`creation_date` AS 'crea_date', `list`.`limit_date` AS 'lim_date' FROM `list` INNER JOIN `user_list` ON `list`.`id_list` = `user_list`.`id_list` WHERE `user_list`.`id_user` = :id_user");
+$reqList->bindParam('id_user', $_SESSION['id_user'], PDO::PARAM_STR);
 $reqList->execute();
 $list = $reqList->fetchAll(PDO::FETCH_ASSOC);
-
+// var_dump($list);
 ?>
 
 <!DOCTYPE html>
@@ -63,6 +63,7 @@ $list = $reqList->fetchAll(PDO::FETCH_ASSOC);
             </figure>
             <div><?=ucfirst($_SESSION['username']) ?></div>
         </div> -->
+        <div><a href="log-out.php">Se déconnecter</a></div>
     </header>
     <section>
         <div>
