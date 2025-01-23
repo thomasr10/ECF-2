@@ -41,17 +41,42 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css">
     <title>TaskHive - Se connecter</title>
 </head>
-<body>
-    <form action="./index.php" method="POST">
-        <input type="text" name="pseudo" placeholder="Pseudo ou adresse mail">
-        <input type="password" name="password" placeholder="Mot de passe">
-        <input type="submit" name="submit" placeholder="Se connecter">
-    </form>
-    <div>
-        <div><a href="">Mot de passe oublié</a></div>
-        <div><a href="sign.php">S'inscrire</a></div>
+<body class="grey">
+    <div id="top-bar">
+        <nav>
+            <figure><img src="./assets/img/TaskHive.svg" alt="logo TaskHive" width="4%"></figure>
+        </nav>
     </div>
+    <section id="login-page">
+        <div class="container center-col">
+            <h1 class="h1 popp-bold">TaskHive</h1>
+            <p class="popp-reg">Plateforme de to-do-list collaborative</p>
+            <p class="popp-reg">La to-do-list qui bourdonne d’idées !</p>
+        </div>
+        <div class="container center-col">
+            <span class="h2 popp-bold">Se connecter</span>
+        </div>
+        <div class="container center-col">
+            <form action="./index.php" method="POST" class="login-form">
+                <div class="mb-3">
+                    <input class="form-control login-input border-r form-text" type="text" name="pseudo" placeholder="Pseudo ou adresse mail">
+                </div>
+                <div >
+                    <input class="form-control login-input border-r form-text" type="password" name="password" placeholder="Mot de passe">
+                </div>
+                <div class="login-btn">
+                    <input class="btn btn-primary form-control yellow border-r popp-medium" type="submit" name="submit" value="Se connecter">
+                </div>
+            </form>
+        </div>
+        <div id="sign-container" class="container center-flex">
+            <div><a class="black popp-reg" href="">Mot de passe oublié</a></div>
+            <div><a class="black popp-reg" href="sign.php">S'inscrire</a></div>
+        </div>
+    </section>
 </body>
 </html>

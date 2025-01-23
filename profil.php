@@ -2,6 +2,12 @@
 session_start();
 include_once('connexion.php');
 
+if(isset($_SESSION)){
+    header('Location: profil.php');
+} else {
+    header('Location: index.php');
+}
+
 //Créer une liste        
 
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addList'])){
@@ -51,35 +57,50 @@ $list = $reqList->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>TaskHive - Ma Ruche</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css">
 </head>
-<body>
+<body class="grey">
     <header>
-        <!-- <div id="top-bar">
-            <figure>
-                <img src="./assets/img/TaskHive.svg" alt="">
-                <span>TaskHive</span>
-            </figure>
-            <div><?=ucfirst($_SESSION['username']) ?></div>
-        </div> -->
-        <div><a href="log-out.php">Se déconnecter</a></div>
-    </header>
-    <section>
-        <div>
-            <h1>Ma ruche</h1>
-            <div>
-                <button>Nouvelle liste +</button>
-            </div>
+        <div id="navbar-container" class="container">
+            <nav>
+                <div id="navbar">
+                    <figure>
+                        <a href="profil.php"><img src="./assets/img/TaskHive.svg" alt="logo TaskHive"></a>
+                    </figure>
+                    <div id="navbar-links">
+                        <div><span class="black popp-medium"><?=ucfirst($_SESSION['username']) ?></span></div> 
+                        <div><a class="black popp-medium" href="log-out.php">Logout</a></div>
+                    </div>
+                </div>
+            </nav>
         </div>
-        <div>
-            <span>Créer une liste</span>
-            <div>
-                <form action="profil.php" method="POST">
-                    <input type="text" name="list-name" minlength="3" maxlength="16" required>
-                    <textarea name="list-description" id="list-description" minlength="5" maxlength="40" required></textarea>
-                    <input type="date" name="date" required>
-                    <input type="submit" name="addList" id="submit">
+        <section class="container">
+        <div class="profil-title">
+            <h1 class="h1 popp-semiBold">Ma ruche</h1>
+            <button id="new-list">Nouvelle liste +</button>
+        </div>
+        <div id="create-list" class="new-list center-col none">
+            <i id="close-list" class="fa-solid fa-x"></i>
+            <span class="h3 popp-medium">Créer une liste</span>
+            <div class="container center-col">
+                <form action="profil.php" method="POST" class="login-form">
+                    <div>
+                        <input class="form-control mb-3 login-input border-r form-text" type="text" name="list-name" minlength="3" maxlength="16" required placeholder="Nom de la liste">
+                    </div>
+                    <div>
+                        <textarea class="form-control mb-3 form-text" name="list-description" id="list-description" minlength="5" maxlength="40" required placeholder="Description"></textarea>
+                    </div>
+                    <div>
+                        <label class="popp-reg black" for="">Date de fin</label>
+                        <input class="form-control mb-3 login-input border-r form-text" type="date" name="date" required>
+                    </div>
+                    <div class="login-btn">
+                       <input class="btn btn-primary form-control yellow border-r popp-medium" type="submit" name="addList" id="submit"> 
+                    </div>
                 </form>
             </div>
         </div>
@@ -88,13 +109,15 @@ $list = $reqList->fetchAll(PDO::FETCH_ASSOC);
             if(count($list) > 0){
                 foreach($list as $l){
             ?>
-            <div>
-                <h2><?= $l['name'] ?></h2>
-                <p><?= $l['desc'] ?></p>
-                <div><?= $l['crea_date'] ?></div>
-                <div><?= $l['lim_date'] ?></div>
-                <div><a href="./task.php?id_list=<?= $l['id_list'] ?>">Modifier</a></div>
-                <i class="fa-solid fa-trash"></i>
+            <div class="display-list">
+                <a href="./task.php?id_list=<?= $l['id_list'] ?>">
+                    <h2 class="h2 black popp-medium"><?= $l['name'] ?></h2>
+                    <p class="black popp-regular"><?= $l['desc'] ?></p>
+                    <div class="black popp-regular"><?= $l['crea_date'] ?></div>
+                    <div class="black popp-regular"><?= $l['lim_date'] ?></div>
+                    <i class="fa-solid fa-trash"></i>
+                    <button class="btn button-primary">Supprimer</button>  
+                </a>
             </div>
             <?php
                 }
@@ -104,6 +127,7 @@ $list = $reqList->fetchAll(PDO::FETCH_ASSOC);
             ?>
         </div>
     </section>
-    <script src="./assets/js/add-task.js"></script>
+    </header>
+    <script src="./assets/js/new-list.js"></script>
 </body>
 </html>

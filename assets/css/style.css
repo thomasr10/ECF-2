@@ -1,0 +1,243 @@
+@font-face {
+    font-family: 'Poppins Medium';
+    src: url(../font/Poppins-Medium.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: 'Poppins Regular';
+    src: url(../font/Poppins-Regular.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: 'Poppins SemiBold';
+    src: url(../font/Poppins-SemiBold.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: 'Poppins Light';
+    src: url(../font/Poppins-Light.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: 'Poppins Bold';
+    src: url(../font/Poppins-Bold.ttf) format("truetype");
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	vertical-align: baseline;
+    list-style-type: none;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.row-limit-size {
+    width: 100%;
+    max-width: 1400px;
+}
+
+.popp-light {
+    font-family: 'Poppins Light';
+}
+
+.popp-medium {
+    font-family: 'Poppins Medium'; 
+}
+
+.popp-semiBold {
+    font-family: 'Poppins SemiBold';
+}
+
+.popp-reg {
+    font-family: 'Poppins Regular';
+}
+
+.popp-bold {
+    font-family: 'Poppins Bold';
+}
+
+.yellow {
+    color: #ffc107;
+}
+
+.black {
+    color: #212121;
+}
+
+.grey {
+    background-color: #F5F5F5;
+}
+
+.btn {
+    background-color: #212121;
+    border: none;
+}
+
+.login-input {
+    background-color: #ffc107;
+    border: none;
+    height: 60px;
+}
+
+.border-r {
+    border-radius: 40px;
+}
+
+.form-text {
+    color: #212121;
+    font-family: 'Poppins Medium'; 
+}
+
+
+.login-btn > input {
+    margin-top: 30px;
+    height: 60px;
+}
+
+.btn:hover {
+    background-color: #303030;
+    color: #ffc107;
+}
+
+.center-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.center-flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form {
+    width: 100%;
+    max-width: 600px;
+}
+
+.form-control:focus{
+    border: 3px solid #ffc107;
+    box-shadow: none;
+}
+
+#sign-container {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 16px;
+}
+
+#login-page span, #sign-page span, #create-list span {
+    margin: 20px 0;
+}
+
+
+.profil-title {
+    display: flex;
+}
+
+#create-list {
+    border: 2px solid #212121;
+    padding: 40px 0;
+    width: 100%;
+    max-width: 600px;
+    margin: 50px auto;
+    border-radius: 40px;
+    position: relative;
+}
+
+.none {
+    display: none;
+}
+
+
+#create-list > i {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #212121;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: all ease 0.25s;
+}
+
+#create-list i:hover {
+    color: #FFC107;
+}
+
+
+#navbar-container figure {
+    display: flex;
+    width: 100%;
+}
+
+#navbar-container img {
+    max-width: 20%;
+}
+
+#navbar {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 20px;
+}
+
+#navbar-links {
+    display: flex;
+}
+
+#navbar-links a {
+    color: #212121;
+    margin-left: 20px;
+}
+
+#new-list {
+    border: 2px solid #212121;
+    color: #FFC107;
+    background-color: #212121;
+    font-family: 'Poppins Medium';
+    margin-left: 20px;
+}
+
+.profil-title {
+    margin-top: 40px;
+}
+
+.display-list {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 400px;
+    border: solid 2px #212121;
+    background-color: #FFC107;
+    position: relative;
+}
+
+.display-list h2 {
+    margin-bottom: 8px;
+}
+
+.display-list p {
+    margin-bottom: 16px;
+}
+
+.display-list a i {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    color: #212121;
+}
