@@ -2,12 +2,6 @@
 session_start();
 include_once('connexion.php');
 
-if(isset($_SESSION)){
-    header('Location: profil.php');
-} else {
-    header('Location: index.php');
-}
-
 //Créer une liste        
 
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addList'])){
@@ -18,10 +12,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addList'])){
 
     if(!empty($listName) && !empty($listDesc) && !empty($limDate)){
 
-        $addList = $bdd->prepare("INSERT INTO `list`(`name`, `description`, `creation_date`, `limit_date`) VALUES (:listName, :listDesc, NOW(), :limDate)");
+        $addList = $bdd->prepare("INSERT INTO `list`(`name`, `description`, `creation_date`, `limit_date`, `creator_id`) VALUES (:listName, :listDesc, NOW(), :limDate, :creator_id)");
         $addList->bindParam('listName', $listName, PDO::PARAM_STR);
         $addList->bindParam('listDesc', $listDesc, PDO::PARAM_STR);
         $addList->bindParam('limDate', $limDate, PDO::PARAM_STR);
+        $addList->bindParam('creator_id', $_SESSION['id_user'], PDO::PARAM_INT);
         $addList->execute();
 
         if($addList->rowCount() > 0){
@@ -33,7 +28,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addList'])){
             $userList->bindParam('id_list', $listId, PDO::PARAM_INT);
             $userList->execute();
 
-
             header('Location: profil.php');
             exit();
         } else {
@@ -43,13 +37,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addList'])){
     }
 }
 
+
 //afficher les listes
 
-$reqList = $bdd->prepare("SELECT `list`.`id_list` AS `id_list`, `list`.`name` AS 'name', `description` AS 'desc', `list`.`creation_date` AS 'crea_date', `list`.`limit_date` AS 'lim_date' FROM `list` INNER JOIN `user_list` ON `list`.`id_list` = `user_list`.`id_list` WHERE `user_list`.`id_user` = :id_user");
+$reqList = $bdd->prepare("SELECT `list`.`id_list` AS `id_list`, `list`.`name` AS 'name', `description` AS 'desc', `list`.`creation_date` AS 'crea_date', `list`.`limit_date` AS 'lim_date', `list`.`creator_id` AS 'creator_id' FROM `list` INNER JOIN `user_list` ON `list`.`id_list` = `user_list`.`id_list` WHERE `user_list`.`id_user` = :id_user");
 $reqList->bindParam('id_user', $_SESSION['id_user'], PDO::PARAM_STR);
 $reqList->execute();
 $list = $reqList->fetchAll(PDO::FETCH_ASSOC);
-// var_dump($list);
+
 ?>
 
 <!DOCTYPE html>
@@ -79,53 +74,74 @@ $list = $reqList->fetchAll(PDO::FETCH_ASSOC);
             </nav>
         </div>
         <section class="container">
-        <div class="profil-title">
-            <h1 class="h1 popp-semiBold">Ma ruche</h1>
-            <button id="new-list">Nouvelle liste +</button>
-        </div>
-        <div id="create-list" class="new-list center-col none">
-            <i id="close-list" class="fa-solid fa-x"></i>
-            <span class="h3 popp-medium">Créer une liste</span>
-            <div class="container center-col">
-                <form action="profil.php" method="POST" class="login-form">
-                    <div>
-                        <input class="form-control mb-3 login-input border-r form-text" type="text" name="list-name" minlength="3" maxlength="16" required placeholder="Nom de la liste">
-                    </div>
-                    <div>
-                        <textarea class="form-control mb-3 form-text" name="list-description" id="list-description" minlength="5" maxlength="40" required placeholder="Description"></textarea>
-                    </div>
-                    <div>
-                        <label class="popp-reg black" for="">Date de fin</label>
-                        <input class="form-control mb-3 login-input border-r form-text" type="date" name="date" required>
-                    </div>
-                    <div class="login-btn">
-                       <input class="btn btn-primary form-control yellow border-r popp-medium" type="submit" name="addList" id="submit"> 
-                    </div>
-                </form>
+            <div class="profil-title">
+                <h1 class="h1 popp-semiBold">Ma ruche</h1>
+                <button id="new-list">Nouvelle liste +</button>
             </div>
-        </div>
-        <div>
-        <?php
-            if(count($list) > 0){
-                foreach($list as $l){
-            ?>
-            <div class="display-list">
-                <a href="./task.php?id_list=<?= $l['id_list'] ?>">
-                    <h2 class="h2 black popp-medium"><?= $l['name'] ?></h2>
-                    <p class="black popp-regular"><?= $l['desc'] ?></p>
-                    <div class="black popp-regular"><?= $l['crea_date'] ?></div>
-                    <div class="black popp-regular"><?= $l['lim_date'] ?></div>
-                    <i class="fa-solid fa-trash"></i>
-                    <button class="btn button-primary">Supprimer</button>  
-                </a>
+            <div id="create-list" class="new-list center-col none">
+                <i id="close-list" class="fa-solid fa-x"></i>
+                <span class="h3 popp-medium">Créer une liste</span>
+                <div class="container center-col">
+                    <form action="profil.php" method="POST" class="login-form">
+                        <div>
+                            <input class="form-control mb-3 login-input border-r form-text" type="text" name="list-name" minlength="3" maxlength="16" required placeholder="Nom de la liste">
+                        </div>
+                        <div>
+                            <textarea class="form-control mb-3 form-text" name="list-description" id="list-description" minlength="5" maxlength="40" required placeholder="Description"></textarea>
+                        </div>
+                        <div>
+                            <label class="popp-reg black" for="">Date de fin</label>
+                            <input class="form-control mb-3 login-input border-r form-text" type="date" name="date" required>
+                        </div>
+                        <div class="login-btn">
+                        <input class="btn btn-primary form-control yellow border-r popp-medium" type="submit" name="addList" id="submit"> 
+                        </div>
+                    </form>
+                </div>
             </div>
+            <div class="grid">
             <?php
+            
+                if(count($list) > 0){
+                    foreach($list as $l){
+                ?>
+                <div class="display-list">
+                    <a href="./task.php?id_list=<?= $l['id_list'] . ' ' . 'Créé par' . ' ' .  ?>">
+                        <div class="list">
+                            <h2 class="h2 black popp-medium"><?= $l['name'] ?></h2>
+                            <p class="black popp-regular"><?= $l['desc'] ?></p>
+                            <div class="black popp-regular"><?= $l['crea_date'] ?></div>
+                            <div class="black popp-regular mb-3"><?= $l['lim_date'] ?></div>
+                            <form action="profil.php"  method="POST">
+                                <input type="hidden" value="<?= $l['id_list'] ?>" name="check-list">
+                                <button class="btn mb-3 yellow">Terminer</button>    
+                            </form>
+                            <?php
+
+                                if($_SESSION['id_user'] == $l['creator_id']){
+                            ?>
+                                <form action="profil.php"  method="POST">
+                                    <input type="hidden" value="<?= $l['id_list'] ?>" name="delete-list">
+                                    <button class="no-bg-btn"><i class="fa-solid fa-trash"></i></button>
+                                </form>
+                            <?php
+                                } 
+                            ?>
+                        </div>
+    
+                    </a>
+                </div>
+                <?php
+                    }
+                } else {
+                ?>
+                    <div class="empty-container">
+                        <span class="yellow popp-bold">Aucune liste</span>
+                    </div>
+                <?php
                 }
-            } else {
-                echo 'Aucune tâche pour le moment';
-            }
-            ?>
-        </div>
+                ?>
+            </div>
     </section>
     </header>
     <script src="./assets/js/new-list.js"></script>
