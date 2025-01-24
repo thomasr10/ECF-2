@@ -12,11 +12,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addList'])){
 
     if(!empty($listName) && !empty($listDesc) && !empty($limDate)){
 
-        $addList = $bdd->prepare("INSERT INTO `list`(`name`, `description`, `creation_date`, `limit_date`, `creator_id`) VALUES (:listName, :listDesc, NOW(), :limDate, :creator_id)");
+        $addList = $bdd->prepare("INSERT INTO `list`(`name`, `description`, `creation_date`, `limit_date`, `creator_id`, `creator_name`) VALUES (:listName, :listDesc, NOW(), :limDate, :creator_id, :creator_name)");
         $addList->bindParam('listName', $listName, PDO::PARAM_STR);
         $addList->bindParam('listDesc', $listDesc, PDO::PARAM_STR);
         $addList->bindParam('limDate', $limDate, PDO::PARAM_STR);
         $addList->bindParam('creator_id', $_SESSION['id_user'], PDO::PARAM_INT);
+        $addList->bindParam('creator_name', $_SESSION['username'], PDO::PARAM_STR);
         $addList->execute();
 
         if($addList->rowCount() > 0){
@@ -40,10 +41,26 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addList'])){
 
 //afficher les listes
 
-$reqList = $bdd->prepare("SELECT `list`.`id_list` AS `id_list`, `list`.`name` AS 'name', `description` AS 'desc', `list`.`creation_date` AS 'crea_date', `list`.`limit_date` AS 'lim_date', `list`.`creator_id` AS 'creator_id' FROM `list` INNER JOIN `user_list` ON `list`.`id_list` = `user_list`.`id_list` WHERE `user_list`.`id_user` = :id_user");
+$reqList = $bdd->prepare("SELECT `list`.`id_list` AS `id_list`, `list`.`name` AS 'name', `description` AS 'desc', `list`.`creation_date` AS 'crea_date', `list`.`limit_date` AS 'lim_date', `list`.`creator_id` AS 'creator_id', `list`.`creator_name` AS 'creator_name' FROM `list` INNER JOIN `user_list` ON `list`.`id_list` = `user_list`.`id_list` WHERE `user_list`.`id_user` = :id_user ORDER BY `list`.`limit_date` ASC");
 $reqList->bindParam('id_user', $_SESSION['id_user'], PDO::PARAM_STR);
 $reqList->execute();
 $list = $reqList->fetchAll(PDO::FETCH_ASSOC);
+
+// supprimer une liste
+
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+    $id_list = isset($_POST['delete-list']) ? $_POST['delete-list'] : '';
+
+    if($id_list){
+        $deleteList = $bdd->prepare("DELETE FROM `list` WHERE `id_list` = :id_list");
+        $deleteList->bindParam('id_list', $id_list, PDO::PARAM_INT);
+        $deleteList->execute();
+
+        header('Location: profil.php');
+        exit();
+    }
+}
 
 ?>
 
@@ -106,9 +123,9 @@ $list = $reqList->fetchAll(PDO::FETCH_ASSOC);
                     foreach($list as $l){
                 ?>
                 <div class="display-list">
-                    <a href="./task.php?id_list=<?= $l['id_list'] . ' ' . 'Créé par' . ' ' .  ?>">
+                    <a href="./task.php?id_list=<?= $l['id_list']?>">
                         <div class="list">
-                            <h2 class="h2 black popp-medium"><?= $l['name'] ?></h2>
+                            <h2 class="h2 black popp-regular"><?= $l['name'] . ' ' . '-' . ' ' . 'Créée par' . ' ' . $l['creator_name'] ?></h2>
                             <p class="black popp-regular"><?= $l['desc'] ?></p>
                             <div class="black popp-regular"><?= $l['crea_date'] ?></div>
                             <div class="black popp-regular mb-3"><?= $l['lim_date'] ?></div>

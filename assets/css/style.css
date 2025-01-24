@@ -142,7 +142,7 @@ time, mark, audio, video {
     margin-top: 16px;
 }
 
-#login-page span, #sign-page span, #create-list span, #create-task span, #add-bee span {
+#login-page span, #sign-page span, #create-list span, #create-task span, #add-bee span, #modify-task span {
     margin: 20px 0;
 }
 
@@ -151,7 +151,7 @@ time, mark, audio, video {
     display: flex;
 }
 
-#create-list, #create-task, #add-bee {
+#create-list, #create-task, #add-bee, #modify-task {
     border: 3px solid #212121;
     padding: 40px 0;
     width: 100%;
@@ -165,7 +165,7 @@ time, mark, audio, video {
     display: none;
 }
 
-#create-list > i, #create-task i, #add-bee i {
+#create-list > i, #create-task i, #add-bee i, #modify-task i {
     position: absolute;
     top: 20px;
     right: 30px;
@@ -175,7 +175,7 @@ time, mark, audio, video {
     transition: all ease 0.25s;
 }
 
-#create-list i:hover, #create-task i:hover, #add-bee i:hover {
+#create-list i:hover, #create-task i:hover, #add-bee i:hover, #modify-task i:hover {
     color: #FFC107;
 }
 
@@ -224,6 +224,11 @@ time, mark, audio, video {
     background-color: #FFC107;
     position: relative;
     border-radius: 8px;
+    transition: all ease 0.35s;
+}
+
+.display-list:hover {
+    background-color: #ffbf00a9;
 }
 
 .display-list h2 {
@@ -265,6 +270,26 @@ time, mark, audio, video {
     /* border: solid 2px #212121; */
     background-color: #FFC107;
     /* border-radius: 8px; */
+}
+
+
+.checked-task {
+    margin-top: 20px;
+    max-height: 100%;
+    min-height: 140px;
+    width: 100%;
+    /* border: solid 2px #212121; */
+    background-color: #ffc10788;
+    /* border-radius: 8px; */
+    color: #3030304b;
+}
+
+.checked-task i, .checked-task p, .checked-task h2, .checked-task div {
+    color: #3030304b;
+}
+
+.checked-task i[class="fa-solid fa-check"]{
+    display: none;
 }
 
 .task {
@@ -343,3 +368,4 @@ time, mark, audio, video {
     font-size: 2rem;
     margin-top: 20px;
 }
+

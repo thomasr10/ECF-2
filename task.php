@@ -6,7 +6,8 @@ include_once('connexion.php');
 if(isset($_GET['id_list'])){
     $idList = $_GET['id_list'];
 }   else {
-    echo 'Probleme';
+    header('Location: profil.php');
+    exit();
 }
 
 // ajouter une nouvelle tâche
@@ -42,9 +43,9 @@ $listName = $reqListName->fetch(PDO::FETCH_ASSOC);
 
 
 
-//afficher les requêtes
+//afficher les tâches
 
-$reqTask = $bdd->prepare("SELECT DISTINCT `task`.`id_task`, `task`.`name`, `task`.`description` AS 'desc', `task`.`creation_date` AS 'crea_date', `task`.`limit_date` AS 'lim_date', `task`.`statut` AS 'statut', `task`.`id_list`  FROM `task` WHERE `id_list` = :id_list");
+$reqTask = $bdd->prepare("SELECT DISTINCT `task`.`id_task`, `task`.`name`, `task`.`description` AS 'desc', `task`.`creation_date` AS 'crea_date', `task`.`limit_date` AS 'lim_date', `task`.`statut` AS 'statut', `task`.`id_list`  FROM `task` WHERE `id_list` = :id_list ORDER BY `statut` ASC, `limit_date` ASC");
 $reqTask->bindParam('id_list', $idList, PDO::PARAM_INT);
 $reqTask->execute();
 $task = $reqTask->fetchAll(PDO::FETCH_ASSOC);
@@ -90,7 +91,7 @@ if($_SERVER['REQUEST_METHOD'] && isset($_POST['addUser'])){
 
 // afficher les utilisateurs
 
-$reqUser = $bdd->prepare("SELECT `user`.`id_user`, `user`.`name` AS 'name' FROM `user` INNER JOIN `user_list` ON `user`.`id_user` = `user_list`.`id_user` INNER JOIN `list` ON `user_list`.`id_list` = `list`.`id_list` WHERE `list`.`id_list` = :id_list");
+$reqUser = $bdd->prepare("SELECT `user`.`id_user`, `user`.`name` AS 'name', `list`.`creator_name`AS 'creator_name' FROM `user` INNER JOIN `user_list` ON `user`.`id_user` = `user_list`.`id_user` INNER JOIN `list` ON `user_list`.`id_list` = `list`.`id_list` WHERE `list`.`id_list` = :id_list");
 $reqUser->bindParam('id_list', $idList, PDO::PARAM_INT);
 $reqUser->execute();
 
@@ -165,7 +166,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         </div>
         <div id="create-task" class="new-list center-col none">
             <i id="close-task" class="fa-solid fa-x"></i>
-            <span class="h3 popp-medium">Nouvelle tâche</span>
+            <span class="h3 popp-medium">Ajouter une tâche</span>
             <div class="container center-col">
                 <form action="task.php?id_list=<?= $idList ?>" method="POST" class="login-form">
                     <div>
@@ -203,10 +204,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 <span class="h4 popp-regular">Les abeilles</span>
                 <ul>
                 <?php
-                foreach($displayUser as $user){
-                    $user['name'] = $user['name'] === $_SESSION['username'] ? $user['name'] . ' ' . '(Vous)' : $user['name'];
+                foreach($displayUser as $user){             
                  ?>
-                    <li class="black popp-regular"><?= $user['name'] ?></li>
+                    <li class="<?= $user['name'] === $user['creator_name'] ? 'yellow popp-bold' : 'black popp-regular' ?>"><?= $user['name'] = $user['name'] === $_SESSION['username'] ? $user['name'] . ' ' . '(Vous)' : $user['name']; ?></li>
                  <?php
                 }
                 ?>
@@ -216,14 +216,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 <?php
                 if(count($task) > 0){
                     foreach($task as $tasks){
+                        $id_task = $tasks['id_task'];
                 ?>
-                <div class="display-task">
+                <div class="<?= $tasks['statut'] == 0 ? 'display-task' : 'checked-task'?>">
                     <a href="">
                         <div class="list task">
                             <div>
                                 <h2 class="h2 black popp-medium"><?= $tasks['name'] ?></h2>
-                                <p class="black popp-regular"><?= $tasks['desc'] ?></p>
-                                <p class="black popp-regular"><?= $tasks['statut'] ?></p>                            
+                                <p class="black popp-regular"><?= $tasks['desc'] ?></p>                      
                             </div>
                             <div id="date">
                                 <div class="black popp-medium"><?= $tasks['crea_date'] ?> /</div>
@@ -231,7 +231,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                             </div>
                             <div id="list-icon">
                                 <form action="task.php?id_list=<?= $idList ?>" method="POST">
-                                    <input type="hidden" name="check-task" value="<?= $tasks['id_task']?>">
+                                    <input type="hidden" id="check-task" name="check-task" value="<?= $tasks['id_task']?>">
                                     <button class="no-bg-btn"><i class="fa-solid fa-check"></i></button>
                                 </form>
                                 <form action="task.php?id_list=<?= $idList ?>" method="POST">
@@ -256,5 +256,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         </div>
     </section>
     <script src="./assets/js/new-task.js"></script>
+    <script src="./assets/js/modify-task.js"></script>
 </body>
 </html>
