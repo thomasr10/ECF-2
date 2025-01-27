@@ -2,6 +2,9 @@
 session_start();
 include_once('connexion.php');
 
+if(!isset($_SESSION['id_user'])){
+    header('Location: index.php');
+}
 //Créer une liste        
 
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addList'])){
@@ -130,8 +133,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                             <div class="black popp-regular"><?= $l['crea_date'] ?></div>
                             <div class="black popp-regular mb-3"><?= $l['lim_date'] ?></div>
                             <form action="profil.php"  method="POST">
-                                <input type="hidden" value="<?= $l['id_list'] ?>" name="check-list">
-                                <button class="btn mb-3 yellow">Terminer</button>    
+                                <input type="hidden" value="<?= $l['id_list'] ?>" name="check-list">  
                             </form>
                             <?php
 

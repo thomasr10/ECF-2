@@ -210,7 +210,12 @@ time, mark, audio, video {
     background-color: #212121;
     font-family: 'Poppins Medium';
     margin-left: 20px;
+    transition: all ease 0.25s;
 }
+
+#new-list:hover, #new-task:hover, #new-bee:hover {
+    background-color: #303030;
+} 
 
 .profil-title {
     margin-top: 40px;
@@ -314,7 +319,7 @@ time, mark, audio, video {
     font-size: 1.2rem;
     display: flex;
     gap: 8px;
-    margin-top: 40px;
+    margin: 20px 0;
 }
 
 .no-bg-btn {
@@ -369,3 +374,32 @@ time, mark, audio, video {
     margin-top: 20px;
 }
 
+.modify-input {
+    display: inline-block; /* Ajuste pour s'adapter à l'input */
+    cursor: pointer;       /* Change le curseur pour indiquer la clicabilité */
+}
+.modify-input input {
+    pointer-events: none;
+    background-color: transparent;
+    border: none;
+}
+
+.display-task input:disabled{
+    border: none;
+    background-color: transparent;
+    color: #212121;
+}
+
+.checked-task input{
+    border: none;
+    color: #3030304b;
+    background-color: transparent;
+}
+
+.desc-input {
+    display: block;
+}
+
+.desc-input input {
+    width: 100%;
+}

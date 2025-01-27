@@ -61,9 +61,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     <title>TaskHive - Inscription</title>
 </head>
 <body class="grey">
-    <div id="top-bar">
+<div id="navbar-container" class="container">
         <nav>
-            <figure><img src="./assets/img/TaskHive.svg" alt="logo TaskHive" width="4%"></figure>
+            <div id="navbar">
+                <figure>
+                    <a href="profil.php"><img src="./assets/img/TaskHive.svg" alt="logo TaskHive"></a>
+                </figure>
+            </div>
         </nav>
     </div>
     <section id="sign-page">
@@ -84,7 +88,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                     <input class="form-control login-input border-r form-text" type="text" name="mail" placeholder="Adresse mail">
                 </div>
                 <div class="mb-3">
-                   <input class="form-control login-input border-r form-text" type="password" name="password" placeholder="Mot de passe"> 
+                   <input class="form-control login-input border-r form-text" type="password" name="password" placeholder="Mot de passe (8 caractères min.)"> 
                 </div>
                 <div class="mb-3">
                     <input class="form-control login-input border-r form-text" type="password" name="conf_password" placeholder="Confirmer le mot de passe">

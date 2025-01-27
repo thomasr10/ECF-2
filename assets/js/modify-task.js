@@ -1,18 +1,30 @@
-// let task = document.querySelectorAll('.display-task');
-
-// task.forEach(t => {
-
-//     const taskId = t.getAttribute('id');
-//     const modifyTaskForm = document.getElementById(`modify-task-${taskId}`);
-//     const closeForm = document.getElementById(`close-mod-${taskId}`)
+const modifyDiv = document.querySelectorAll('.modify-input');
 
 
-//     t.addEventListener('click', function(){
-//         modifyTaskForm.classList.remove('none');
-//     })
+modifyDiv.forEach(div => {
+    div.addEventListener('click', function () {
+        const input = div.querySelector('input');
+        const selectInput = input.closest('#search-form');
+        
+        if (input) {
 
-//     closeForm.addEventListener('click', function(){
-//         modifyTaskForm.classList.add('none'); 
-//     })
-// });
+            input.focus();
+            input.addEventListener('focusout', function(){
+                let searchForm = selectInput;
+                let formData = new FormData(searchForm);
+
+                fetch('modify-task.php', {
+                    method: "POST",
+                    body: formData,
+                })
+                .then((datas) => datas.json())
+                .then((datas) => {
+                    console.log(datas)
+                })
+            })
+        }
+    });
+});
+
+
 

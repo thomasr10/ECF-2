@@ -2,13 +2,13 @@
 session_start();
 
 include_once('connexion.php');
+if(!isset($_SESSION['id_user'])){
+    header('Location: index.php');
+}
 
 if(isset($_GET['id_list'])){
     $idList = $_GET['id_list'];
-}   else {
-    header('Location: profil.php');
-    exit();
-}
+} 
 
 // ajouter une nouvelle tâche
 
@@ -145,18 +145,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 <body class="grey">
     <header>
     <div id="navbar-container" class="container">
-            <nav>
-                <div id="navbar">
-                    <figure>
-                        <a href="profil.php"><img src="./assets/img/TaskHive.svg" alt="logo TaskHive"></a>
-                    </figure>
-                    <div id="navbar-links">
-                        <div><span class="black popp-medium"><?=ucfirst($_SESSION['username']) ?></span></div> 
-                        <div><a class="black popp-medium" href="log-out.php">Logout</a></div>
-                    </div>
+        <nav>
+            <div id="navbar">
+                <figure>
+                    <a href="profil.php"><img src="./assets/img/TaskHive.svg" alt="logo TaskHive"></a>
+                </figure>
+                <div id="navbar-links">
+                    <div><span class="black popp-medium"><?=ucfirst($_SESSION['username']) ?></span></div> 
+                    <div><a class="black popp-medium" href="log-out.php">Logout</a></div>
                 </div>
-            </nav>
-        </div>
+            </div>
+        </nav>
+    </div>
     </header>
     <section class="container">
         <div class="profil-title">
@@ -219,28 +219,40 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         $id_task = $tasks['id_task'];
                 ?>
                 <div class="<?= $tasks['statut'] == 0 ? 'display-task' : 'checked-task'?>">
-                    <a href="">
-                        <div class="list task">
+                    <div class="list task">
+                        <form method="POST" id="search-form">
+                            <input id="id-task" type="hidden" name="id-task" value="<?= $tasks['id_task']?>">
                             <div>
-                                <h2 class="h2 black popp-medium"><?= $tasks['name'] ?></h2>
-                                <p class="black popp-regular"><?= $tasks['desc'] ?></p>                      
-                            </div>
+                                <div class="modify-input">
+                                    <input name="task-title" class="h2 black popp-medium " type="text" value="<?= $tasks['name'] ?>" >                                
+                                </div>
+                                <div class="modify-input desc-input">
+                                    <input name="task-desc" class="black popp-regular" type="text" value="<?= $tasks['desc'] ?>" >
+                                </div>
+                            </div>                      
                             <div id="date">
-                                <div class="black popp-medium"><?= $tasks['crea_date'] ?> /</div>
-                                <div class="black popp-medium"><?= $tasks['lim_date'] ?></div>                            
+                                <div>
+                                    <input class="black popp-medium" type="date" value="<?= $tasks['crea_date'] ?>" disabled>
+                                </div>
+                                <div class="modify-input">
+                                    <input name="task-lim-date" class="black popp-medium" type="date" value="<?= $tasks['lim_date'] ?>" >
+                                </div>                    
                             </div>
-                            <div id="list-icon">
-                                <form action="task.php?id_list=<?= $idList ?>" method="POST">
-                                    <input type="hidden" id="check-task" name="check-task" value="<?= $tasks['id_task']?>">
-                                    <button class="no-bg-btn"><i class="fa-solid fa-check"></i></button>
-                                </form>
-                                <form action="task.php?id_list=<?= $idList ?>" method="POST">
-                                    <input type="hidden" name="delete-task" value="<?= $tasks['id_task']?>">
-                                    <button class="no-bg-btn"><i class="fa-solid fa-trash"></i></button>
-                                </form>                     
-                            </div>
+                        </form>
+                        <div id="list-icon">
+                            <form action="task.php?id_list=<?= $idList ?>" method="POST">
+                                <input type="hidden" id="check-task" name="check-task" value="<?= $tasks['id_task']?>">
+                                <button class="no-bg-btn"><i class="fa-solid fa-check"></i></button>
+                            </form>
+                            <form action="task.php?id_list=<?= $idList ?>" method="POST">
+                                <input type="hidden" name="delete-task" value="<?= $tasks['id_task']?>">
+                                <button class="no-bg-btn"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                            <form action="task.php?id_list=<?= $idList ?>" method="POST">
+                                <input id="task-id-<?=$tasks['id_task']?>" type="hidden" name="modify-task" value="<?= $tasks['id_task']?>">                             
+                            </form>                  
                         </div>
-                    </a>
+                    </div>
                 </div>
                 <?php
                     }

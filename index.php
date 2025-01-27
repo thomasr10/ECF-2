@@ -46,9 +46,13 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
     <title>TaskHive - Se connecter</title>
 </head>
 <body class="grey">
-    <div id="top-bar">
+<div id="navbar-container" class="container">
         <nav>
-            <figure><img src="./assets/img/TaskHive.svg" alt="logo TaskHive" width="4%"></figure>
+            <div id="navbar">
+                <figure>
+                    <a href="profil.php"><img src="./assets/img/TaskHive.svg" alt="logo TaskHive"></a>
+                </figure>
+            </div>
         </nav>
     </div>
     <section id="login-page">
@@ -74,7 +78,6 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
             </form>
         </div>
         <div id="sign-container" class="container center-flex">
-            <div><a class="black popp-reg" href="">Mot de passe oublié</a></div>
             <div><a class="black popp-reg" href="sign.php">S'inscrire</a></div>
         </div>
     </section>
